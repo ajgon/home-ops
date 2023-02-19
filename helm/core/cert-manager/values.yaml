@@ -1,0 +1,18 @@
+---
+cert-manager:
+  extraArgs:
+    - "--dns01-recursive-nameservers-only"
+    - "--dns01-recursive-nameservers=9.9.9.9:53,1.1.1.1:53"
+  installCRDs: true
+  fullnameOverride: cert-manager
+  serviceLabels:
+    release: prometheus-stack
+  ingressShim:
+    defaultIssuerName: letsencrypt-staging
+    defaultIssuerKind: ClusterIssuer
+  prometheus:
+    enabled: true
+    servicemonitor:
+      enabled: true
+      labels:
+        release: prometheus-stack
