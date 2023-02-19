@@ -5,4 +5,5 @@ kubectl create namespace argocd
 kubectl create secret generic helm-secrets-private-keys --from-file=key.asc=/home/ajgon/.config/sops/age/keys.txt -n argocd
 helm secrets install argocd bootstrap/argo-cd --namespace argocd -f projects/default/secrets.yaml
 kubectl apply -f https://raw.githubusercontent.com/ajgon/home-ops/master/bootstrap/apps/argo-cd.yaml
+kubectl apply -f https://raw.githubusercontent.com/ajgon/home-ops/master/bootstrap/apps/app-of-apps.yaml
 ```

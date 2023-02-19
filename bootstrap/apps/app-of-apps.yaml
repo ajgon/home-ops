@@ -1,0 +1,23 @@
+---
+# yaml-language-server:$schema=https://gist.githubusercontent.com/ajgon/4b9a6b7b0822644083d0890a20704b75/raw/argocd-application.schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-of-apps
+  namespace: argocd
+spec:
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: bootstrap/app-of-apps
+    repoURL: https://github.com/ajgon/home-ops.git
+    targetRevision: master
+  syncPolicy:
+    automated:
+      allowEmpty: true
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
