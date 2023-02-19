@@ -1,0 +1,43 @@
+---
+ingress-nginx:
+  controller:
+    kind: DaemonSet
+    config:
+      custom-http-errors: 400,401,403,404,500,502,503,504
+      global-auth-method: GET
+      global-auth-url: http://authelia.auth.svc.cluster.local/api/verify
+      global-auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+      global-auth-cache-key: "$remote_user$http_cookie"
+      global-auth-cache-duration: "200 202 30m, 401 1m"
+      global-auth-snippet: |
+        proxy_set_header X-Forwarded-Method $request_method;
+      force-ssl-redirect: "true"
+      proxy-body-size: "0"
+      ssl-protocols: "TLSv1.3 TLSv1.2"
+      ssl-redirect: "false"
+    extraArgs:
+      default-ssl-certificate: cert-manager/tld-tls
+    extraEnvs:
+      - name: TZ
+        value: Europe/Warsaw
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        additionalLabels:
+          release: prometheus-stack
+    service:
+      type: NodePort
+      nodePorts:
+        http: 30080
+        https: 30443
+  defaultBackend:
+    enabled: true
+    image:
+      repository: ghcr.io/tarampampam/error-pages
+      tag: 2.20.0
+    extraEnvs:
+      - name: TEMPLATE_NAME
+        value: app-down
+      - name: SHOW_DETAILS
+        value: "false"
