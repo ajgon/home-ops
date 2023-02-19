@@ -1,0 +1,13 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/chart.json
+apiVersion: v2
+name: argocd
+version: 1.0.0
+type: application
+dependencies:
+  - name: argo-cd
+    version: 5.21.0
+    repository: https://argoproj.github.io/argo-helm
+  - name: argocd-image-updater
+    version: 0.8.4
+    repository: https://argoproj.github.io/argo-helm
