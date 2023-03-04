@@ -27,10 +27,8 @@ ingress-nginx:
         additionalLabels:
           release: prometheus-stack
     service:
+      # @todo remove this, when https://github.com/kubernetes/ingress-nginx/pull/9562 gets patched
       type: NodePort
-      nodePorts:
-        http: 30080
-        https: 30443
   defaultBackend:
     enabled: true
     image:
