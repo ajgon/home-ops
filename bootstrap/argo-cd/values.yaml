@@ -7,15 +7,23 @@ argo-cd:
       "server.insecure": true
 
   controller:
-    replicas: 1
+    replicas: 2
     metrics:
       enabled: true
       serviceMonitor:
         enabled: true
         additionalLabels:
           release: prometheus-stack
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
 
   dex:
+    enabled: false
+
+  notifications:
     enabled: false
 
   server:
@@ -44,11 +52,16 @@ argo-cd:
         secrets+age-import, secrets+age-import-kubernetes,
         secrets,secrets+literal,
         https
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
 
   repoServer:
+    replicas: 2
     autoscaling:
       enabled: false
-      minReplicas: 1
     metrics:
       enabled: true
       serviceMonitor:
@@ -119,24 +132,67 @@ argo-cd:
         volumeMounts:
           - mountPath: /custom-tools
             name: custom-tools
+        securityContext:
+          runAsUser: 10000
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          seccompProfile:
+            type: RuntimeDefault
+  securityContext:
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
 
 
   applicationSet:
-    replicaCount: 1
+    replicaCount: 2
     metrics:
       enabled: true
       serviceMonitor:
         enabled: true
         additionalLabels:
           release: prometheus-stack
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
 
   redis:
-    enabled: true
+    enabled: false
+  redis-ha:
+    enabled: false
+  externalRedis:
+    host: redis-ha-haproxy.storage.svc.cluster.local
+    existingSecret: argocd-credentials
+    port: 6379
 
 argocd-image-updater:
+  replicaCount: 2
   metrics:
     enabled: true
     serviceMonitor:
       enabled: true
       additionalLabels:
         release: prometheus-stack
+  podSecurityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  securityContext:
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+  #resources:
+    #requests:
+      #memory: 512Mi
+    #limits:
+      #memory: 1024Mi

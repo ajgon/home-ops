@@ -1,6 +1,8 @@
 ---
 ingress-nginx:
   controller:
+    image:
+      runAsUser: 10001
     kind: DaemonSet
     config:
       custom-http-errors: 400,401,403,404,500,502,503,504
@@ -26,11 +28,36 @@ ingress-nginx:
         enabled: true
         additionalLabels:
           release: prometheus-stack
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
+    admissionWebhooks:
+      createSecretJob:
+        securityContext:
+          allowPrivilegeEscalation: false
+        #resources:
+          #requests:
+            #memory: 512Mi
+          #limits:
+            #memory: 1024Mi
+      patchWebhookJob:
+        securityContext:
+          allowPrivilegeEscalation: false
+        #resources:
+          #requests:
+            #memory: 512Mi
+          #limits:
+            #memory: 1024Mi
     service:
       # @todo remove this, when https://github.com/kubernetes/ingress-nginx/pull/9562 gets patched
       type: NodePort
   defaultBackend:
     enabled: true
+    replicaCount: 2
     image:
       repository: ghcr.io/tarampampam/error-pages
       tag: 2.20.0
@@ -39,3 +66,8 @@ ingress-nginx:
         value: app-down
       - name: SHOW_DETAILS
         value: "false"
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi

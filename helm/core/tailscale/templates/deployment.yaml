@@ -5,7 +5,7 @@ metadata:
   name: operator
   namespace: tailscale
 spec:
-  replicas: 1
+  replicas: 2
   strategy:
     type: Recreate
   selector:
@@ -21,14 +21,32 @@ spec:
       - name: oauth
         secret:
           secretName: operator-oauth
+      - name: config
+        emptyDir:
+          medium: Memory
       containers:
         - name: operator
           image: tailscale/k8s-operator:unstable
           resources:
             requests:
               cpu: 500m
-              memory: 100Mi
+              memory: 128Mi
+            limits:
+              cpu: 1000m
+              memory: 256Mi
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            runAsUser: 10000
+            runAsNonRoot: true
+            capabilities:
+              drop:
+              - ALL
+            seccompProfile:
+              type: RuntimeDefault
           env:
+            - name: HOME
+              value: /config
             - name: OPERATOR_HOSTNAME
               value: tailscale-operator
             - name: OPERATOR_SECRET
@@ -53,3 +71,5 @@ spec:
           - name: oauth
             mountPath: /oauth
             readOnly: true
+          - name: config
+            mountPath: /config

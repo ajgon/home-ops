@@ -1,5 +1,6 @@
 ---
 cert-manager:
+  replicaCount: 2
   extraArgs:
     - "--dns01-recursive-nameservers-only"
     - "--dns01-recursive-nameservers=9.9.9.9:53,1.1.1.1:53"
@@ -16,3 +17,44 @@ cert-manager:
       enabled: true
       labels:
         release: prometheus-stack
+  securityContext: &securityContext
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext: &containerSecurityContext
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+  #resources:
+    #requests:
+      #memory: 512Mi
+    #limits:
+      #memory: 1024Mi
+  cainjector:
+    replicaCount: 2
+    securityContext: *securityContext
+    containerSecurityContext: *containerSecurityContext
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
+  startupapicheck:
+    securityContext: *securityContext
+    containerSecurityContext: *containerSecurityContext
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
+  webhook:
+    replicaCount: 2
+    securityContext: *securityContext
+    containerSecurityContext: *containerSecurityContext
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
