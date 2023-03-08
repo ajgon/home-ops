@@ -1,0 +1,26 @@
+---
+# yaml-language-server:$schema=https://gist.githubusercontent.com/ajgon/4b9a6b7b0822644083d0890a20704b75/raw/argocd-application.schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis-ha
+  namespace: argocd
+spec:
+  destination:
+    namespace: storage
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: bootstrap/redis-ha
+    repoURL: https://github.com/ajgon/home-ops.git
+    targetRevision: master
+    helm:
+      valueFiles:
+        - secrets+age-import-kubernetes://argocd/helm-secrets-private-keys#key.asc?../../../projects/default/secrets.yaml
+  syncPolicy:
+    automated:
+      allowEmpty: false
+      selfHeal: false
+      prune: true
+    syncOptions:
+      - CreateNamespace=true

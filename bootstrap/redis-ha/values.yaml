@@ -1,0 +1,116 @@
+---
+redis-ha:
+  image:
+    tag: 7-alpine
+
+  auth: true
+  existingSecret: redis-ha
+  authKey: auth
+
+  containerSecurityContext: &containerSecurityContext
+    runAsUser: 10000
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    seccompProfile:
+      type: RuntimeDefault
+    capabilities:
+      drop:
+        - ALL
+  securityContext: &securityContext
+    runAsUser: 10000
+    fsGroup: 10000
+    runAsNonRoot: true
+
+  exporter:
+    enabled: true
+    extraArgs:
+      include-system-metrics: true
+    serviceMonitor:
+      enabled: true
+      namespace: storage
+      labels:
+        release: prometheus-stack
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
+
+  #init:
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
+
+  #configmapTest:
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
+
+  #sentinel:
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
+
+  #sysctlImage:
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
+
+  #splitBrainDetection:
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
+
+  haproxy:
+    enabled: true
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        namespace: storage
+        labels:
+          release: prometheus-stack
+    containerSecurityContext: *containerSecurityContext
+    securityContext: *securityContext
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
+    #init:
+      #resources:
+        #requests:
+          #memory: 512Mi
+        #limits:
+          #memory: 1024Mi
+    #tests:
+      #resources:
+        #requests:
+          #memory: 512Mi
+        #limits:
+          #memory: 1024Mi
+
+  persistentVolume:
+    enabled: false
+
+  redis:
+    masterGroupName: mymaster
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
+
+  topologySpreadConstraints:
+    enabled: false
