@@ -1,0 +1,28 @@
+# yaml-language-server:$schema=https://gist.githubusercontent.com/ajgon/4b9a6b7b0822644083d0890a20704b75/raw/argocd-application.schema.json
+# https://github.com/prometheus-operator/prometheus-operator/issues/4439#issuecomment-1030198014
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kubelet-serving-cert-approver
+  namespace: argocd
+spec:
+  destination:
+    namespace: kubelet-serving-cert-approver
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: deploy
+    directory:
+      recurse: false
+      include: ha-install.yaml
+    repoURL: https://github.com/alex1989hu/kubelet-serving-cert-approver.git
+    targetRevision: v0.6.7
+  syncPolicy:
+    automated:
+      allowEmpty: false
+      selfHeal: false
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
