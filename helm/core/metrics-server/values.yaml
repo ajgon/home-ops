@@ -1,0 +1,12 @@
+---
+metrics-server:
+  replicas: 2
+  securityContext:
+    runAsUser: 10000
+  resources:
+    requests:
+      cpu: 50m
+      memory: 50Mi
+    limits:
+      cpu: 100m
+      memory: 200Mi
