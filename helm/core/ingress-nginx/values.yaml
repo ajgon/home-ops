@@ -52,9 +52,6 @@ ingress-nginx:
             #memory: 512Mi
           #limits:
             #memory: 1024Mi
-    service:
-      # @todo remove this, when https://github.com/kubernetes/ingress-nginx/pull/9562 gets patched
-      type: NodePort
   defaultBackend:
     enabled: true
     replicaCount: 2
