@@ -1,0 +1,20 @@
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: trusted-peer
+  namespace: metallb-system
+spec:
+  myASN: 65100
+  peerASN: 65000
+  peerAddress: 10.100.1.1
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: untrusted-peer
+  namespace: metallb-system
+spec:
+  myASN: 65200
+  peerASN: 65000
+  peerAddress: 10.200.1.1

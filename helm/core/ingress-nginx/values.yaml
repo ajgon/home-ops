@@ -17,11 +17,15 @@ ingress-nginx:
       proxy-body-size: "0"
       ssl-protocols: "TLSv1.3 TLSv1.2"
       ssl-redirect: "false"
+      whitelist-source-range: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
     extraArgs:
       default-ssl-certificate: cert-manager/tld-tls
     extraEnvs:
       - name: TZ
         value: Europe/Warsaw
+    service:
+      annotations:
+        metallb.universe.tf/loadBalancerIPs: 10.100.40.10
     metrics:
       enabled: true
       serviceMonitor:

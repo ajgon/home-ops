@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-apiserver
+  namespace: kube-system
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: 10.100.40.11
+spec:
+  ports:
+    - name: apiserver
+      port: 6443
+      protocol: TCP
+      targetPort: 6443
+  selector:
+    k8s-app: kube-apiserver
+  type: LoadBalancer

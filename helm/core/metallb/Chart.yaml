@@ -1,0 +1,11 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/chart.json
+apiVersion: v2
+name: metallb
+version: 1.0.0
+type: application
+dependencies:
+  - name: metallb
+    version: v4.1.20
+    repository: https://charts.bitnami.com/bitnami
+

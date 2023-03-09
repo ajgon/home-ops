@@ -1,0 +1,34 @@
+---
+# yaml-language-server:$schema=https://gist.githubusercontent.com/ajgon/4b9a6b7b0822644083d0890a20704b75/raw/argocd-application.schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metallb
+  namespace: argocd
+spec:
+  destination:
+    namespace: metallb-system
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: helm/core/metallb
+    repoURL: https://github.com/ajgon/home-ops.git
+    targetRevision: master
+  syncPolicy:
+    automated:
+      allowEmpty: false
+      selfHeal: false
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        pod-security.kubernetes.io/enforce: privileged
+        pod-security.kubernetes.io/audit: restricted
+        pod-security.kubernetes.io/warn: restricted
+  ignoreDifferences:
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+      jsonPointers:
+        - "/spec/conversion/webhook/clientConfig/caBundle"
+

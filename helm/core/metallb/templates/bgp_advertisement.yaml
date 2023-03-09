@@ -1,0 +1,22 @@
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: trusted-advertisement
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - trusted-pool
+  peers:
+    - trusted-peer
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: untrusted-advertisement
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - untrusted-pool
+  peers:
+    - untrusted-peer

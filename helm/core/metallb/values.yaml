@@ -1,0 +1,16 @@
+---
+metallb:
+  controller:
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
+    containerSecurityContext:
+      runAsUser: 10001
+  #speaker:
+    #resources:
+      #requests:
+        #memory: 512Mi
+      #limits:
+        #memory: 1024Mi
