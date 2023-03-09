@@ -1,0 +1,23 @@
+---
+# yaml-language-server:$schema=https://gist.githubusercontent.com/ajgon/4b9a6b7b0822644083d0890a20704b75/raw/argocd-application.schema.json
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vertical-pod-autoscaler
+  namespace: argocd
+spec:
+  destination:
+    namespace: vpa
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: helm/core/vertical-pod-autoscaler
+    repoURL: https://github.com/ajgon/home-ops.git
+    targetRevision: master
+  syncPolicy:
+    automated:
+      allowEmpty: false
+      selfHeal: false
+      prune: true
+    syncOptions:
+      - CreateNamespace=true

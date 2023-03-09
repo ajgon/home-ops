@@ -1,0 +1,10 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/chart.json
+apiVersion: v2
+name: vertical-pod-autoscaler
+version: 1.0.0
+type: application
+dependencies:
+  - name: vpa
+    version: v1.6.1
+    repository: https://charts.fairwinds.com/stable
