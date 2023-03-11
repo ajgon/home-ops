@@ -16,7 +16,7 @@ spec:
     targetRevision: master
     helm:
       valueFiles:
-        - secrets+age-import-kubernetes://argocd/helm-secrets-private-keys#key.asc?../../../projects/default/secrets.yaml
+        - secrets+age-import-kubernetes://argocd/helm-secrets-private-keys#key.asc?../../projects/default/secrets.yaml
   syncPolicy:
     automated:
       allowEmpty: false

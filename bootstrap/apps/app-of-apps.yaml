@@ -14,6 +14,9 @@ spec:
     path: bootstrap/app-of-apps
     repoURL: https://github.com/ajgon/home-ops.git
     targetRevision: master
+    helm:
+      valueFiles:
+        - secrets+age-import-kubernetes://argocd/helm-secrets-private-keys#key.asc?../../projects/default/secrets.yaml
   syncPolicy:
     automated:
       allowEmpty: true

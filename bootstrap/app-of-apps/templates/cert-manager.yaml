@@ -17,6 +17,66 @@ spec:
     helm:
       valueFiles:
         - secrets+age-import-kubernetes://argocd/helm-secrets-private-keys#key.asc?../../../projects/default/secrets.yaml
+      values: |
+        cert-manager:
+          replicaCount: 2
+          extraArgs:
+            - "--dns01-recursive-nameservers-only"
+            - "--dns01-recursive-nameservers=9.9.9.9:53,1.1.1.1:53"
+          installCRDs: true
+          fullnameOverride: cert-manager
+          serviceLabels:
+            release: prometheus-stack
+          ingressShim:
+            defaultIssuerName: {{ .Values.secrets.global.letsencrypt_issuer }}
+            defaultIssuerKind: ClusterIssuer
+          prometheus:
+            enabled: true
+            servicemonitor:
+              enabled: true
+              labels:
+                release: prometheus-stack
+          securityContext: &securityContext
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          containerSecurityContext: &containerSecurityContext
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+          #resources:
+            #requests:
+              #memory: 512Mi
+            #limits:
+              #memory: 1024Mi
+          cainjector:
+            replicaCount: 2
+            securityContext: *securityContext
+            containerSecurityContext: *containerSecurityContext
+            #resources:
+              #requests:
+                #memory: 512Mi
+              #limits:
+                #memory: 1024Mi
+          startupapicheck:
+            securityContext: *securityContext
+            containerSecurityContext: *containerSecurityContext
+            #resources:
+              #requests:
+                #memory: 512Mi
+              #limits:
+                #memory: 1024Mi
+          webhook:
+            replicaCount: 2
+            securityContext: *securityContext
+            containerSecurityContext: *containerSecurityContext
+            #resources:
+              #requests:
+                #memory: 512Mi
+              #limits:
+                #memory: 1024Mi
   syncPolicy:
     automated:
       allowEmpty: false

@@ -14,6 +14,22 @@ spec:
     path: helm/core/vertical-pod-autoscaler
     repoURL: https://github.com/ajgon/home-ops.git
     targetRevision: master
+    helm:
+      values: |
+        vpa:
+          fullnameOverride: vpa
+          recommender:
+            image:
+              tag: 0.13.0
+            replicaCount: 2
+            securityContext: &securityContext
+              readOnlyRootFilesystem: true
+              allowPrivilegeEscalation: false
+          updater:
+            image:
+              tag: 0.13.0
+            replicaCount: 2
+            securityContext: *securityContext
   syncPolicy:
     automated:
       allowEmpty: false

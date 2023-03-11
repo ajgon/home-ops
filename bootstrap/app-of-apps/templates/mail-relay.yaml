@@ -17,6 +17,61 @@ spec:
     helm:
       valueFiles:
         - secrets+age-import-kubernetes://argocd/helm-secrets-private-keys#key.asc?../../../projects/default/secrets.yaml
+      values: |
+        mail:
+          replicaCount: 3
+
+          certs:
+            create: true
+
+          persistence:
+            enabled: false
+
+          extraVolumeMounts:
+            - name: mail-secrets
+              mountPath: /secrets/relayhost-password
+              readOnly: true
+              subPath: relayhost-password
+            - name: mail-secrets
+              mountPath: /docker-init.db/_enable_sasl2.sh
+              readOnly: true
+              subPath: _enable_sasl2.sh
+            - name: mail-secrets
+              mountPath: /etc/sasl2/smtpd.conf
+              readOnly: true
+              subPath: smtpd.conf
+
+          extraVolumes:
+            - name: mail-secrets
+              secret:
+                secretName: mail-relay
+
+          config:
+            general:
+              ALLOWED_SENDER_DOMAINS: "{{ .Values.secrets.mail_relay.ingress.domain }}"
+              RELAYHOST: "{{ .Values.secrets.mail_relay.egress.host }}:{{ .Values.secrets.mail_relay.egress.port }}"
+              RELAYHOST_USERNAME: "{{ .Values.secrets.mail_relay.egress.username }}"
+              TZ: "{{ .Values.secrets.global.tz }}"
+              LOG_FORMAT: plain
+              RELAYHOST_PASSWORD_FILE: /secrets/relayhost-password
+            postfix:
+              myhostname: "{{ .Values.secrets.global.tld }}"
+              smtpd_use_tls: "yes"
+              smtpd_sasl_auth_enable: "yes"
+              smtpd_sasl_path: smtpd
+              cyrus_sasl_config_path: /etc/sasl2
+
+          container:
+            postfix:
+              securityContext:
+                #readOnlyRootFilesystem: true
+                allowPrivilegeEscalation: false
+
+          #resources:
+            #requests:
+              #memory: 512Mi
+            #limits:
+              #memory: 1024Mi
   syncPolicy:
     automated:
       allowEmpty: false
