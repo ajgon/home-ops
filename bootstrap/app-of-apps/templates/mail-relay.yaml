@@ -20,12 +20,28 @@ spec:
       values: |
         mail:
           replicaCount: 3
+          livenessProbe:
+            successThreshold: 1
+            timeoutSeconds: 3
+          readinessProbe:
+            successThreshold: 2
+            timeoutSeconds: 3
+          startupProbe:
+            successThreshold: 1
+            timeoutSeconds: 3
 
           certs:
             create: true
 
           persistence:
             enabled: false
+
+          pod:
+            annotations:
+              seccomp.security.alpha.kubernetes.io/pod: runtime/default
+            securityContext:
+              seccompProfile:
+                type: RuntimeDefault
 
           extraVolumeMounts:
             - name: mail-secrets
@@ -64,14 +80,19 @@ spec:
           container:
             postfix:
               securityContext:
+                #runAsNonRoot: true
                 #readOnlyRootFilesystem: true
                 allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - NET_RAW
 
-          #resources:
-            #requests:
-              #memory: 512Mi
-            #limits:
-              #memory: 1024Mi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              memory: 1Gi
   syncPolicy:
     automated:
       allowEmpty: false

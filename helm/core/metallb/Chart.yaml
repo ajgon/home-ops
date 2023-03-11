@@ -8,4 +8,3 @@ dependencies:
   - name: metallb
     version: v4.1.20
     repository: https://charts.bitnami.com/bitnami
-

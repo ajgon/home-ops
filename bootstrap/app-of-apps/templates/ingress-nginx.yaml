@@ -24,7 +24,9 @@ spec:
               runAsUser: 10001
             kind: DaemonSet
             addHeaders:
-              Content-Security-Policy: 'default-src ''self'' ''unsafe-inline'' data: blob: wss:; object-src ''none''; report-uri https://csp.{{ .Values.secrets.global.tld }}/report/csp/default;'
+              Content-Security-Policy: >-
+                default-src 'self' 'unsafe-inline' data: blob: wss:; object-src 'none';
+                report-uri https://csp.{{ .Values.secrets.global.tld }}/report/csp/default;
             config:
               custom-http-errors: 400,401,403,404,500,502,503,504
               global-auth-method: GET
@@ -44,7 +46,7 @@ spec:
               default-ssl-certificate: cert-manager/tld-tls
             extraEnvs:
               - name: TZ
-                value: {{ .Values.secrets.global.tz }}
+                value: "{{ .Values.secrets.global.tz }}"
             service:
               annotations:
                 metallb.universe.tf/loadBalancerIPs: 10.100.40.10
@@ -54,46 +56,69 @@ spec:
                 enabled: true
                 additionalLabels:
                   release: prometheus-stack
+            #podSecurityContext:
+              #seccompProfile:
+                #type: RuntimeDefault
             containerSecurityContext:
               allowPrivilegeEscalation: false
-            #resources:
-              #requests:
-                #memory: 512Mi
-              #limits:
-                #memory: 1024Mi
+              capabilities:
+                drop:
+                  - NET_RAW
+            resources:
+              requests:
+                cpu: 100m
+                memory: 150Mi
+              limits:
+                memory: 1Gi
             admissionWebhooks:
               createSecretJob:
                 securityContext:
+                  #seccompProfile:
+                    #type: RuntimeDefault
                   allowPrivilegeEscalation: false
-                #resources:
-                  #requests:
-                    #memory: 512Mi
-                  #limits:
-                    #memory: 1024Mi
+                  capabilities:
+                    drop:
+                      - ALL
+                resources:
+                  requests:
+                    cpu: 100m
+                    memory: 100Mi
+                  limits:
+                    memory: 1Gi
               patchWebhookJob:
                 securityContext:
+                  #seccompProfile:
+                    #type: RuntimeDefault
                   allowPrivilegeEscalation: false
-                #resources:
-                  #requests:
-                    #memory: 512Mi
-                  #limits:
-                    #memory: 1024Mi
+                  capabilities:
+                    drop:
+                      - ALL
+                resources:
+                  requests:
+                    cpu: 100m
+                    memory: 100Mi
+                  limits:
+                    memory: 1Gi
           defaultBackend:
             enabled: true
             replicaCount: 2
             image:
               repository: ghcr.io/tarampampam/error-pages
               tag: 2.20.0
+            #podSecurityContext:
+              #seccompProfile:
+                #type: RuntimeDefault
             extraEnvs:
               - name: TEMPLATE_NAME
                 value: app-down
               - name: SHOW_DETAILS
                 value: "false"
-            #resources:
-              #requests:
-                #memory: 512Mi
-              #limits:
-                #memory: 1024Mi
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100Mi
+              limits:
+                memory: 1Gi
   syncPolicy:
     automated:
       allowEmpty: false

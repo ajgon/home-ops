@@ -1,0 +1,239 @@
+---
+# https://hub.datree.io/built-in-rules
+# yamllint disable rule:line-length
+apiVersion: v1
+policies:
+  - name: Default
+    isDefault: true
+    rules:
+      # NSA
+      - messageOnFailure: Prevent containers from accessing host files by using high UIDs
+        identifier: CONTAINERS_INCORRECT_RUNASUSER_VALUE_LOWUID
+      - messageOnFailure: Ensure each container has a read-only root filesystem
+        identifier: CONTAINERS_INCORRECT_READONLYROOTFILESYSTEM_VALUE
+      - messageOnFailure: Prevent containers from accessing host files by using high GIDs
+        identifier: CONTAINERS_INCORRECT_RUNASGROUP_VALUE_LOWGID
+      - messageOnFailure: Prevent containers from accessing the underlying host
+        identifier: CONTAINERS_INCORRECT_KEY_HOSTPATH
+      - messageOnFailure: Prevent containers from allowing command execution
+        identifier: CONTAINERS_INCORRECT_RESOURCES_VERBS_VALUE
+      - messageOnFailure: Prevent containers from escalating privileges
+        identifier: CONTAINERS_MISSING_KEY_ALLOWPRIVILEGEESCALATION
+      - messageOnFailure: Prevent containers from having insecure capabilities
+        identifier: CONTAINERS_INVALID_CAPABILITIES_VALUE
+      - messageOnFailure: Prevent containers from insecurely exposing workload
+        identifier: CONTAINERS_INCORRECT_KEY_HOSTPORT
+      - messageOnFailure: Prevent container from running with root privileges
+        identifier: CONTAINERS_INCORRECT_RUNASNONROOT_VALUE
+
+      # CIS
+      - messageOnFailure: Prevent containers from having root access capabilities
+        identifier: CONTAINERS_INCORRECT_PRIVILEGED_VALUE_TRUE
+      - messageOnFailure: Prevent containers from sharing the host's PID namespace
+        identifier: CONTAINERS_INCORRECT_HOSTPID_VALUE_TRUE
+      - messageOnFailure: Prevent containers from sharing the host's IPC namespace
+        identifier: CONTAINERS_INCORRECT_HOSTIPC_VALUE_TRUE
+      - messageOnFailure: Prevent containers from sharing the host's network namespace
+        identifier: CONTAINERS_INCORRECT_HOSTNETWORK_VALUE_TRUE
+      - messageOnFailure: Prevent workload from using the default namespace
+        identifier: WORKLOAD_INCORRECT_NAMESPACE_VALUE_DEFAULT
+      - messageOnFailure: Ensure containers have limited capabilities
+        identifier: EKS_INVALID_CAPABILITIES_EKS
+      - messageOnFailure: Prevent Windows containers from running with unnecessary privileges
+        identifier: EKS_INVALID_HOSTPROCESS_VALUE
+      - messageOnFailure: Prevent use of the `cluster-admin` role
+        identifier: CIS_INVALID_ROLE_CLUSTER_ADMIN
+      - messageOnFailure: Prevent access to secrets
+        identifier: CIS_INVALID_VERB_SECRETS
+      - messageOnFailure: Prevent use of secrets as environment variables
+        identifier: CIS_INVALID_KEY_SECRETKEYREF_SECRETREF
+      - messageOnFailure: Ensure seccomp profile is set to docker/default or runtime/default
+        identifier: CIS_INVALID_VALUE_SECCOMP_PROFILE
+      - messageOnFailure: Ensure containers and pods have a configured security context
+        identifier: CIS_MISSING_KEY_SECURITYCONTEXT
+      - messageOnFailure: Prevent access to create pods
+        identifier: CIS_INVALID_VALUE_CREATE_POD
+      - messageOnFailure: Ensure that default service accounts are not actively used
+        identifier: CIS_INVALID_VALUE_AUTOMOUNTSERVICEACCOUNTTOKEN
+      - messageOnFailure: Prevent the admission of containers with the NET_RAW capability
+        identifier: CIS_MISSING_VALUE_DROP_NET_RAW
+      - messageOnFailure: Prevent use of the system:masters group
+        identifier: CIS_INVALID_VALUE_SYSTEM_MASTERS
+      - messageOnFailure: Prevent role privilege escalation
+        identifier: CIS_INVALID_VALUE_BIND_IMPERSONATE_ESCALATE
+
+      # EKS
+      - messageOnFailure: Prevent containers from having unnecessary system call privileges
+        identifier: CONTAINERS_INCORRECT_SECCOMP_PROFILE
+      - messageOnFailure: Ensure multiple replicas run on different nodes
+        identifier: EKS_MISSING_KEY_TOPOLOGYKEY
+      - messageOnFailure: Prevent pods from becoming unschedulable
+        identifier: EKS_INVALID_VALUE_DONOOTSCHEDULE
+      - messageOnFailure: Prevent SELinux containers from running with unnecessary privileges
+        identifier: EKS_INVALID_SELINUXOPTIONS_TYPE_VALUE
+      - messageOnFailure: Prevent SELinux containers from setting a user
+        identifier: EKS_INVALID_SELINUXOPTIONS_USER_VALUE
+      - messageOnFailure: Prevent SELinux containers from setting a role
+        identifier: EKS_INVALID_SELINUXOPTIONS_ROLE_VALUE
+      - messageOnFailure: Ensure hostPath volume mounts are read-only
+        identifier: EKS_INVALID_HOSTPATH_MOUNT_READONLY_VALUE
+
+      # Argo
+      - messageOnFailure: Ensure Workflow DAG fail-fast on node failure
+        identifier: ARGO_WORKFLOW_INCORRECT_FAILFAST_VALUE_FALSE
+      - messageOnFailure: Prevent Workflow pods from using the default service account
+        identifier: ARGO_WORKFLOW_INCORRECT_SERVICE_ACCOUNT_NAME_VALUE_DEFAULT
+      - messageOnFailure: Ensure ConfigMap is recognized by ArgoCD
+        identifier: ARGO_CONFIGMAP_MISSING_PART_OF_LABEL_VALUE_ARGOCD
+      - messageOnFailure: Ensure Rollout pause step has a configured duration
+        identifier: ARGO_ROLLOUT_MISSING_PAUSE_DURATION
+      - messageOnFailure: Ensure Application and AppProject are part of the argocd namespace
+        identifier: ARGO_APP_PROJECT_INCORRECT_NAMESPACE_VALUE
+      - messageOnFailure: Prevent Workflow from having an empty retry strategy
+        identifier: ARGO_WORKFLOW_INCORRECT_RETRY_STRATEGY_VALUE_EMPTY
+      - messageOnFailure: Ensure Rollout has revision history set
+        identifier: ARGO_WORKFLOW_INCORRECT_REVISION_HISTORY_LIMIT_VALUE_0
+      - messageOnFailure: Ensure Rollout allows broadcasting IP table changes
+        identifier: ARGO_ROLLOUT_INCORRECT_SCALE_DOWN_DELAY_VALUE_BELOW_30
+      - messageOnFailure: Ensure Rollout that is marked as degraded scales down ReplicaSet
+        identifier: ARGO_ROLLOUT_INCORRECT_PROGRESS_DEADLINE_ABORT_VALUE_FALSE
+      - messageOnFailure: Ensure Workflow retry policy catches relevant errors only
+        identifier: ARGO_WORKFLOW_ENSURE_RETRY_ON_BOTH_ERROR_AND_TRANSIENT_ERROR
+
+      # CVE
+      - messageOnFailure: Prevent EndpointSlice validation from enabling host network hijack (CVE-2021-25737)
+        identifier: ENDPOINTSLICE_CVE2021_25373_INCORRECT_ADDRESSES_VALUE
+      - messageOnFailure: Prevent container security vulnerability (CVE-2021-25741)
+        identifier: INGRESS_CVE2021_25742_INCORRECT_SERVER_SNIPPET_KEY
+
+      # Deprecation
+      - messageOnFailure: Prevent use of deprecated APIs in Kubernetes v1.16
+        identifier: K8S_DEPRECATED_APIVERSION_1.16
+      - messageOnFailure: Prevent use of deprecated APIs in Kubernetes v1.17
+        identifier: K8S_DEPRECATED_APIVERSION_1.17
+      - messageOnFailure: Prevent use of deprecated APIs in Kubernetes v1.19
+        identifier: K8S_DEPRECATED_APIVERSION_1.19
+      - messageOnFailure: Prevent use of deprecated APIs in Kubernetes v1.21
+        identifier: K8S_DEPRECATED_APIVERSION_1.21
+      - messageOnFailure: Prevent use of deprecated APIs in Kubernetes v1.22
+        identifier: K8S_DEPRECATED_APIVERSION_1.22
+      - messageOnFailure: Prevent use of deprecated APIs in Kubernetes v1.23
+        identifier: K8S_DEPRECATED_APIVERSION_1.23
+      - messageOnFailure: Prevent use of deprecated APIs in Kubernetes v1.24
+        identifier: K8S_DEPRECATED_APIVERSION_1.24
+
+      # Secrets
+      - messageOnFailure: Prevent exposed BitBucket secrets in objects
+        identifier: ALL_EXPOSED_SECRET_BITBUCKET
+      - messageOnFailure: Prevent exposed Datadog secrets in objects
+        identifier: ALL_EXPOSED_SECRET_DATADOG
+      - messageOnFailure: Prevent exposed GCP secrets in objects
+        identifier: ALL_EXPOSED_SECRET_GCP
+      - messageOnFailure: Prevent exposed AWS secrets in objects
+        identifier: ALL_EXPOSED_SECRET_AWS
+      - messageOnFailure: Prevent exposed GitHub secrets in objects
+        identifier: ALL_EXPOSED_SECRET_GITHUB
+      - messageOnFailure: Prevent exposed GitLab secrets in objects
+        identifier: ALL_EXPOSED_SECRET_GITLAB
+      - messageOnFailure: Prevent exposed Terraform secrets in objects
+        identifier: ALL_EXPOSED_SECRET_TERRAFORM
+      - messageOnFailure: Prevent exposed Heroku secrets in objects
+        identifier: ALL_EXPOSED_SECRET_HEROKU
+      - messageOnFailure: Prevent exposed JWT secrets in objects
+        identifier: ALL_EXPOSED_SECRET_JWT
+      - messageOnFailure: Prevent exposed LaunchDarkly secrets in objects
+        identifier: ALL_EXPOSED_SECRET_LAUNCHDARKLY
+      - messageOnFailure: Prevent exposed New Relic secrets in objects
+        identifier: ALL_EXPOSED_SECRET_NEWRELIC
+      - messageOnFailure: Prevent exposed npm secrets in objects
+        identifier: ALL_EXPOSED_SECRET_NPM
+      - messageOnFailure: Prevent exposed Okta secrets in objects
+        identifier: ALL_EXPOSED_SECRET_OKTA
+      - messageOnFailure: Prevent exposed Stripe secrets in objects
+        identifier: ALL_EXPOSED_SECRET_STRIPE
+      - messageOnFailure: Prevent exposed SumoLogic secrets in objects
+        identifier: ALL_EXPOSED_SECRET_SUMOLOGIC
+      - messageOnFailure: Prevent exposed Twilio secrets in objects
+        identifier: ALL_EXPOSED_SECRET_TWILIO
+      - messageOnFailure: Prevent exposed Vault secrets in objects
+        identifier: ALL_EXPOSED_SECRET_VAULT
+      - messageOnFailure: Prevent exposed private keys in objects
+        identifier: ALL_EXPOSED_SECRET_PRIVATEKEY
+
+      # Resources
+      - messageOnFailure: Ensure each container has a configured memory request
+        identifier: CONTAINERS_MISSING_MEMORY_REQUEST_KEY
+      - messageOnFailure: Ensure each container has a configured CPU request
+        identifier: CONTAINERS_MISSING_CPU_REQUEST_KEY
+      - messageOnFailure: Ensure each container has a configured memory limit
+        identifier: CONTAINERS_MISSING_MEMORY_LIMIT_KEY
+
+      # Probes
+      - messageOnFailure: Ensure each container has a configured liveness probe
+        identifier: CONTAINERS_MISSING_LIVENESSPROBE_KEY
+      - messageOnFailure: Ensure each container probe has a configured frequency
+        identifier: CONTAINERS_INCORRECT_PERIODSECONDS_VALUE
+      - messageOnFailure: Ensure each container probe has a configured timeout
+        identifier: CONTAINERS_INCORRECT_TIMEOUTSECONDS_VALUE
+      - messageOnFailure: Ensure each container probe has a configured minimum success threshold
+        identifier: CONTAINERS_INCORRECT_SUCCESSTHRESHOLD_VALUE
+      - messageOnFailure: Ensure each container probe has a configured failure threshold
+        identifier: CONTAINERS_INCORRECT_FAILURETHRESHOLD_VALUE
+
+      # cdk8s
+      - messageOnFailure: Ensure each container image has a pinned (tag) version
+        identifier: CONTAINERS_MISSING_IMAGE_VALUE_VERSION
+      - messageOnFailure: Ensure workload has valid label values
+        identifier: WORKLOAD_INVALID_LABELS_VALUE
+      - messageOnFailure: Ensure deployment-like resource is using a valid restart policy
+        identifier: WORKLOAD_INCORRECT_RESTARTPOLICY_VALUE_ALWAYS
+      - messageOnFailure: Ensure Deployment has more than one replica configured
+        identifier: DEPLOYMENT_INCORRECT_REPLICAS_VALUE
+      - messageOnFailure: Ensure CronJob scheduler is valid
+        identifier: CRONJOB_INVALID_SCHEDULE_VALUE
+      - messageOnFailure: Prevent Ingress from forwarding all traffic to a single container
+        identifier: INGRESS_INCORRECT_HOST_VALUE_PERMISSIVE
+      - messageOnFailure: Ensure resource has a configured name
+        identifier: RESOURCE_MISSING_NAME
+      - messageOnFailure: Prevent deploying naked pods
+        identifier: K8S_INCORRECT_KIND_VALUE_POD
+
+      # Other
+      - messageOnFailure: Prevent containers from mounting Docker socket
+        identifier: CONTAINERS_INCORRECT_PATH_VALUE_DOCKERSOCKET
+      - messageOnFailure: Ensure CronJob has a configured deadline
+        identifier: CRONJOB_MISSING_STARTINGDEADLINESECOND_KEY
+      - messageOnFailure: Prevent CronJob from executing jobs concurrently
+        identifier: CRONJOB_MISSING_CONCURRENCYPOLICY_KEY
+      - messageOnFailure: Prevent Service from exposing node port
+        identifier: SERVICE_INCORRECT_TYPE_VALUE_NODEPORT
+      - messageOnFailure: Ensure HPA has minimum replicas configured
+        identifier: HPA_MISSING_MINREPLICAS_KEY
+      - messageOnFailure: Ensure HPA has maximum replicas configured
+        identifier: HPA_MISSING_MAXREPLICAS_KEY
+
+# disabled globally
+#      - messageOnFailure: Prevent use of wildcards in Roles and ClusterRoles
+#        identifier: CIS_INVALID_WILDCARD_ROLE
+#      - messageOnFailure: Ensure workload has a configured `owner` label
+#        identifier: WORKLOAD_MISSING_LABEL_OWNER_VALUE
+#      - messageOnFailure: Ensure Deployment has a configured `env` label
+#        identifier: DEPLOYMENT_MISSING_LABEL_ENV_VALUE
+#      - messageOnFailure: Ensure each container has a configured readiness probe
+#        identifier: CONTAINERS_MISSING_READINESSPROBE_KEY
+#      - messageOnFailure: Ensure each container probe has an initial delay configured
+#        identifier: CONTAINERS_INCORRECT_INITIALDELAYSECONDS_VALUE
+#      - messageOnFailure: Ensure each container image has a digest tag
+#        identifier: CONTAINERS_MISSING_IMAGE_VALUE_DIGEST
+#      - messageOnFailure: Ensure each container has a configured prestop hook
+#        identifier: CONTAINERS_MISSING_PRESTOP_KEY
+#      - messageOnFailure: Ensure container memory request and memory limit are equal
+#        identifier: EKS_INVALID_MEMORY_REQUEST_LIMIT
+#      - messageOnFailure: Ensure each container has a configured CPU limit
+#        identifier: CONTAINERS_MISSING_CPU_LIMIT_KEY
+#      - messageOnFailure: Ensure each container fully utilizes CPU with no limitations
+#        identifier: EKS_INVALID_CPU_LIMIT
+#      - messageOnFailure: Prevent service account token auto-mounting on pods
+#        identifier: SRVACC_INCORRECT_AUTOMOUNTSERVICEACCOUNTTOKEN_VALUE
+#      - messageOnFailure: Prevent ConfigMap security vulnerability (CVE-2021-25742)
+#        identifier: CONFIGMAP_CVE2021_25742_INCORRECT_SNIPPET_ANNOTATIONS_VALUE

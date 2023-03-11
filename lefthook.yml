@@ -1,0 +1,27 @@
+---
+skip_output:
+  - execution
+pre-commit:
+  parallel: true
+  commands:
+    datree:
+      glob: "bootstrap/app-of-apps/templates/*.y*ml"
+      run: scripts/datree.sh {staged_files}
+    shellcheck:
+      glob: "*.sh"
+      run: shellcheck {staged_files}
+    yamllint:
+      glob: "*.y*ml"
+      run: yamllint {staged_files}
+full:
+  parallel: true
+  commands:
+    datree:
+      glob: "bootstrap/app-of-apps/templates/*.y*ml"
+      run: scripts/datree.sh {all_files}
+    shellcheck:
+      glob: "*.sh"
+      run: shellcheck {all_files}
+    yamllint:
+      glob: "*.y*ml"
+      run: yamllint {all_files}

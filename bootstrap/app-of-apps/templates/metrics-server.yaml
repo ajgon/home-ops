@@ -18,14 +18,31 @@ spec:
       values: |
         metrics-server:
           replicas: 2
+          livenessProbe:
+            successThreshold: 1
+            timeoutSeconds: 3
+          readinessProbe:
+            successThreshold: 2
+            timeoutSeconds: 3
+          podAnnotations:
+            seccomp.security.alpha.kubernetes.io/pod: runtime/default
+          podSecurityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           securityContext:
             runAsUser: 10000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
           resources:
             requests:
               cpu: 50m
               memory: 50Mi
             limits:
-              cpu: 100m
               memory: 200Mi
   syncPolicy:
     automated:

@@ -6,6 +6,8 @@ redis-ha:
   auth: true
   existingSecret: redis-ha
   authKey: auth
+  podAnnotations:
+    seccomp.security.alpha.kubernetes.io/pod: runtime/default
 
   containerSecurityContext: &containerSecurityContext
     runAsUser: 10000
@@ -31,49 +33,17 @@ redis-ha:
       namespace: storage
       labels:
         release: prometheus-stack
-    #resources:
-      #requests:
-        #memory: 512Mi
-      #limits:
-        #memory: 1024Mi
-
-  #init:
-    #resources:
-      #requests:
-        #memory: 512Mi
-      #limits:
-        #memory: 1024Mi
-
-  #configmapTest:
-    #resources:
-      #requests:
-        #memory: 512Mi
-      #limits:
-        #memory: 1024Mi
-
-  #sentinel:
-    #resources:
-      #requests:
-        #memory: 512Mi
-      #limits:
-        #memory: 1024Mi
-
-  #sysctlImage:
-    #resources:
-      #requests:
-        #memory: 512Mi
-      #limits:
-        #memory: 1024Mi
-
-  #splitBrainDetection:
-    #resources:
-      #requests:
-        #memory: 512Mi
-      #limits:
-        #memory: 1024Mi
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        memory: 1Gi
 
   haproxy:
     enabled: true
+    annotations:
+      seccomp.security.alpha.kubernetes.io/pod: runtime/default
     metrics:
       enabled: true
       serviceMonitor:
@@ -83,34 +53,40 @@ redis-ha:
           release: prometheus-stack
     containerSecurityContext: *containerSecurityContext
     securityContext: *securityContext
-    #resources:
-      #requests:
-        #memory: 512Mi
-      #limits:
-        #memory: 1024Mi
-    #init:
-      #resources:
-        #requests:
-          #memory: 512Mi
-        #limits:
-          #memory: 1024Mi
-    #tests:
-      #resources:
-        #requests:
-          #memory: 512Mi
-        #limits:
-          #memory: 1024Mi
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        memory: 1Gi
 
   persistentVolume:
     enabled: false
 
   redis:
     masterGroupName: mymaster
-    #resources:
-      #requests:
-        #memory: 512Mi
-      #limits:
-        #memory: 1024Mi
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        memory: 1Gi
+
+  sentinel:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        memory: 1Gi
+
+  splitBrainDetection:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        memory: 1Gi
 
   topologySpreadConstraints:
     enabled: false

@@ -18,18 +18,30 @@ spec:
       values: |
         vpa:
           fullnameOverride: vpa
-          recommender:
+          recommender: &component
             image:
               tag: 0.13.0
             replicaCount: 2
-            securityContext: &securityContext
+            podAnnotations:
+              seccomp.security.alpha.kubernetes.io/pod: runtime/default
+            podSecurityContext:
+              runAsNonRoot: true
+              seccompProfile:
+                type: RuntimeDefault
+            resources:
+              limits:
+                memory: 1Gi
+              requests:
+                cpu: 100m
+                memory: 512Mi
+            securityContext:
+              runAsNonRoot: true
               readOnlyRootFilesystem: true
               allowPrivilegeEscalation: false
-          updater:
-            image:
-              tag: 0.13.0
-            replicaCount: 2
-            securityContext: *securityContext
+              capabilities:
+                drop:
+                  - ALL
+          updater: *component
   syncPolicy:
     automated:
       allowEmpty: false

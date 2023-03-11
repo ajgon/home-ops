@@ -1,5 +1,8 @@
 ---
 argo-cd:
+  global:
+    podAnnotations:
+      seccomp.security.alpha.kubernetes.io/pod: runtime/default
   configs:
     params:
       # by default argocd handles SSL termination on its own, which breaks TLS termination on nginx,
@@ -14,11 +17,12 @@ argo-cd:
         enabled: true
         additionalLabels:
           release: prometheus-stack
-    #resources:
-      #requests:
-        #memory: 512Mi
-      #limits:
-        #memory: 1024Mi
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        memory: 1Gi
 
   dex:
     enabled: false
@@ -30,8 +34,22 @@ argo-cd:
     autoscaling:
       enabled: true
       minReplicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        memory: 1Gi
     ingress:
-      enabled: false
+      enabled: true
+      annotations:
+        nginx.ingress.kubernetes.io/enable-global-auth: "false"
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/group: Admin
+        gethomepage.dev/name: ArgoCD
+        gethomepage.dev/icon: argocd.png
+        gethomepage.dev/description: CD Platform
+      ingressClassName: nginx
     metrics:
       enabled: true
       serviceMonitor:
@@ -44,16 +62,17 @@ argo-cd:
         secrets+age-import, secrets+age-import-kubernetes,
         secrets,secrets+literal,
         https
-    #resources:
-      #requests:
-        #memory: 512Mi
-      #limits:
-        #memory: 1024Mi
 
   repoServer:
     replicas: 2
     autoscaling:
       enabled: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        memory: 1Gi
     metrics:
       enabled: true
       serviceMonitor:
@@ -108,6 +127,7 @@ argo-cd:
           - name: SOPS_VERSION
             value: "3.7.3"
         args:
+          # yamllint disable rule:line-length
           - |
             mkdir -p /custom-tools/helm-plugins
             wget -qO- https://github.com/jkroepke/helm-secrets/releases/download/v${HELM_SECRETS_VERSION}/helm-secrets.tar.gz | tar -C /custom-tools/helm-plugins -xzf-;
@@ -121,6 +141,7 @@ argo-cd:
             # RUN printf '#!/usr/bin/env sh\nexec %s secrets "$@"' "${HELM_SECRETS_HELM_PATH}" >"/usr/local/sbin/helm" && chmod +x "/custom-tools/helm"
 
             chmod +x /custom-tools/*
+          # yamllint enable
         volumeMounts:
           - mountPath: /custom-tools
             name: custom-tools
@@ -131,16 +152,9 @@ argo-cd:
           allowPrivilegeEscalation: false
           capabilities:
             drop:
-            - ALL
+              - ALL
           seccompProfile:
             type: RuntimeDefault
-  securityContext:
-    #resources:
-      #requests:
-        #memory: 512Mi
-      #limits:
-        #memory: 1024Mi
-
 
   applicationSet:
     replicaCount: 2
@@ -150,11 +164,12 @@ argo-cd:
         enabled: true
         additionalLabels:
           release: prometheus-stack
-    #resources:
-      #requests:
-        #memory: 512Mi
-      #limits:
-        #memory: 1024Mi
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        memory: 1Gi
 
   redis:
     enabled: false
@@ -173,18 +188,22 @@ argocd-image-updater:
       enabled: true
       additionalLabels:
         release: prometheus-stack
+  podAnnotations:
+    seccomp.security.alpha.kubernetes.io/pod: runtime/default
   podSecurityContext:
     runAsNonRoot: true
     seccompProfile:
       type: RuntimeDefault
   securityContext:
+    runAsNonRoot: true
     readOnlyRootFilesystem: true
     allowPrivilegeEscalation: false
     capabilities:
       drop:
-      - ALL
-  #resources:
-    #requests:
-      #memory: 512Mi
-    #limits:
-      #memory: 1024Mi
+        - ALL
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+    limits:
+      memory: 1Gi

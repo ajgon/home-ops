@@ -1,0 +1,6 @@
+---
+filter_resources: >
+  . | select(. | contains({"kind":"Pod"}) | not) |
+  select(. | contains({"kind":"ServiceAccount","metadata":{"name":"vpa-test"}}) | not)
+skip_rules:
+  - CONTAINERS_INCORRECT_RESOURCES_VERBS_VALUE

@@ -23,12 +23,14 @@ spec:
           extraArgs:
             - "--dns01-recursive-nameservers-only"
             - "--dns01-recursive-nameservers=9.9.9.9:53,1.1.1.1:53"
+          podAnnotations:
+            seccomp.security.alpha.kubernetes.io/pod: runtime/default
           installCRDs: true
           fullnameOverride: cert-manager
           serviceLabels:
             release: prometheus-stack
           ingressShim:
-            defaultIssuerName: {{ .Values.secrets.global.letsencrypt_issuer }}
+            defaultIssuerName: "{{ .Values.secrets.global.letsencrypt_issuer }}"
             defaultIssuerKind: ClusterIssuer
           prometheus:
             enabled: true
@@ -46,37 +48,26 @@ spec:
             capabilities:
               drop:
               - ALL
-          #resources:
-            #requests:
-              #memory: 512Mi
-            #limits:
-              #memory: 1024Mi
-          cainjector:
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              memory: 1Gi
+          cainjector: &extraPod
+            podAnnotations:
+              seccomp.security.alpha.kubernetes.io/pod: runtime/default
             replicaCount: 2
             securityContext: *securityContext
             containerSecurityContext: *containerSecurityContext
-            #resources:
-              #requests:
-                #memory: 512Mi
-              #limits:
-                #memory: 1024Mi
-          startupapicheck:
-            securityContext: *securityContext
-            containerSecurityContext: *containerSecurityContext
-            #resources:
-              #requests:
-                #memory: 512Mi
-              #limits:
-                #memory: 1024Mi
-          webhook:
-            replicaCount: 2
-            securityContext: *securityContext
-            containerSecurityContext: *containerSecurityContext
-            #resources:
-              #requests:
-                #memory: 512Mi
-              #limits:
-                #memory: 1024Mi
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100Mi
+              limits:
+                memory: 1Gi
+          startupapicheck: *extraPod
+          webhook: *extraPod
   syncPolicy:
     automated:
       allowEmpty: false

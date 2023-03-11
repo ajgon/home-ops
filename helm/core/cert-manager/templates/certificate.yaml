@@ -7,7 +7,7 @@ metadata:
 spec:
   secretName: tld-tls
   issuerRef:
-    name: {{ .Values.secrets.global.letsencrypt_issuer }}
+    name: "{{ .Values.secrets.global.letsencrypt_issuer }}"
     kind: ClusterIssuer
   dnsNames:
     - "*.vault.{{ .Values.secrets.global.tld }}"
